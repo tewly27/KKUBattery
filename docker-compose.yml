@@ -26,14 +26,13 @@ services:
       PGADMIN_DEFAULT_PASSWORD: k304298
     volumes:
       - pgadmin-data:/var/lib/pgadmin
-  fontend:
-    build: fontend/.
-    ports:
-      - "8080:80"
-  backend:
+  webapp:
+    restart: always
     build: backend/.
     ports:
       - "8000:8000"
+    depends_on:
+      - db
 volumes:
   local_pgdata:
   pgadmin-data:
