@@ -26,6 +26,15 @@ function number_format(number, decimals, dec_point, thousands_sep) {
   }
   return s.join(dec);
 }
+
+if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+  // true for mobile device
+  console.log("mobile device");
+} else {
+  // false for not mobile device
+  console.log("not mobile device");
+}
+
 label2 = [1, 2]
 data2 = [1, 1]
 data3 = [1, 1]
@@ -35,10 +44,12 @@ var myLineChart1;
 var myLineChart2;
 var myLineChart3;
 var myLineChart4;
+var sample=200;
 let request = new XMLHttpRequest();
-const url = `http://127.0.0.1:8000/batinfo/1 `;
+const url = window.location.protocol + '//' + window.location.host + '/batinfo/' + (window.location.hash ? window.location.hash.split('#')[1] : 1);
+
 allchart = []
-Array.prototype.max = function() {
+Array.prototype.max = function () {
   return Math.max.apply(null, this);
 };
 
@@ -50,25 +61,31 @@ request.onreadystatechange = function () {
     data3 = []
     data4 = [[], [], [], []]
     data5 = []
+
     const response = JSON.parse(this.responseText);
-    // console.log(response.rows);
+
+    row_count =  response.rows.length;
+
     response.rows.forEach(element => {
-      label2.push(element.time)
+      i = 0
+      label2.push(new Date(element.date + ' ' + element.time))
       data2.push(element.voltage)
       data3.push(element.current)
-      data4[0].push(element.temp1)
-      data4[1].push(element.temp2)
-      data4[2].push(element.temp3)
-      data4[3].push(element.temp4)
+      data4[0].push((data4[0].length > 0 ? (data4[0][data4[0].length - 1] * ((row_count/20)-1) + element.temp1) / (row_count/20) : element.temp1))
+      data4[1].push((data4[1].length > 0 ? (data4[1][data4[1].length - 1] * ((row_count/20)-1) + element.temp2) / (row_count/20) : element.temp2))
+      data4[2].push((data4[2].length > 0 ? (data4[2][data4[2].length - 1] * ((row_count/20)-1) + element.temp3) / (row_count/20) : element.temp3))
+      data4[3].push((data4[3].length > 0 ? (data4[3][data4[3].length - 1] * ((row_count/20)-1) + element.temp4) / (row_count/20) : element.temp4))
       data5.push(element.remaincap)
     });
+
+    console.log(response.rows)
 
     document.getElementById("cycle").textContent = response.rows[0].cycle;
     document.getElementById("soc").textContent = response.rows[0].soc + "%";
     document.getElementById("socbar").style = "width: " + response.rows[0].soc + "%";
     document.getElementById("remaincap").textContent = response.rows[0].remaincap + " Ah";
     document.getElementById("remaincapbar").style = "width: " + response.rows[0].soc + "%";
-    document.getElementById("maxtemp").textContent = Math.max(data4[0].concat(data4[1],data4[2],data4[3]).max()) + ' °C';
+    document.getElementById("maxtemp").textContent = Math.max(data4[0].concat(data4[1], data4[2], data4[3]).max()).toFixed(2) + ' °C';
 
 
 
@@ -85,9 +102,10 @@ request.onreadystatechange = function () {
         datasets: [{
           label: "Voltage",
           lineTension: lineTensionValue,
-          backgroundColor: "rgba(78, 115, 223, 0.05)",
+          backgroundColor: "rgba(78, 115, 223, 0.2)",
           borderColor: "rgba(78, 115, 223, 1)",
-          pointRadius: 1,
+          borderWidth: 1,
+          pointRadius: 0,
           pointBackgroundColor: "rgba(78, 115, 223, 1)",
           pointBorderColor: "rgba(78, 115, 223, 1)",
           pointHoverRadius: 3,
@@ -100,28 +118,20 @@ request.onreadystatechange = function () {
       },
       options: {
         maintainAspectRatio: false,
-        layout: {
-          padding: {
-            left: 10,
-            right: 25,
-            top: 25,
-            bottom: 0
-          }
-        },
+
         scales: {
           xAxes: [{
+            type: 'time',
             time: {
-              unit: 'time'
+              unit: 'minute'
             },
             ticks: {
-              maxTicksLimit: 13,
-              reverse: true
+              maxTicksLimit: 7
             }
           }],
           yAxes: [{
             ticks: {
               maxTicksLimit: 5,
-              padding: 10,
               callback: function (value, index, values) {
                 return number_format(value) + ' V';
               }
@@ -139,7 +149,7 @@ request.onreadystatechange = function () {
           display: false
         },
         tooltips: {
-          backgroundColor: "rgb(255,255,255)",
+          backgroundColor: 'rgba(255, 255, 255, 0.4)',
           bodyFontColor: "#858796",
           titleMarginBottom: 10,
           titleFontColor: '#6e707e',
@@ -178,9 +188,10 @@ request.onreadystatechange = function () {
         datasets: [{
           label: "Current",
           lineTension: lineTensionValue,
-          backgroundColor: "rgba(178, 115, 223, 0.05)",
+          backgroundColor: "rgba(178, 115, 223, 0.4)",
           borderColor: "rgba(178, 115, 223, 1)",
-          pointRadius: 1,
+          pointRadius: 0,
+          borderWidth: 1,
           pointBackgroundColor: "rgba(178, 115, 223, 1)",
           pointBorderColor: "rgba(178, 115, 223, 1)",
           pointHoverRadius: 3,
@@ -193,28 +204,20 @@ request.onreadystatechange = function () {
       },
       options: {
         maintainAspectRatio: false,
-        layout: {
-          padding: {
-            left: 10,
-            right: 25,
-            top: 25,
-            bottom: 0
-          }
-        },
+
         scales: {
           xAxes: [{
+            type: 'time',
             time: {
-              unit: 'time'
+              unit: 'minute'
             },
             ticks: {
-              maxTicksLimit: 13,
-              reverse: true
+              maxTicksLimit: 7
             }
           }],
           yAxes: [{
             ticks: {
               maxTicksLimit: 5,
-              padding: 10,
               // Include a dollar sign in the ticks
               callback: function (value, index, values) {
                 return number_format(value) + ' A';
@@ -233,7 +236,7 @@ request.onreadystatechange = function () {
           display: false
         },
         tooltips: {
-          backgroundColor: "rgb(255,255,255)",
+          backgroundColor: 'rgba(255, 255, 255, 0.4)',
           bodyFontColor: "#858796",
           titleMarginBottom: 10,
           titleFontColor: '#6e707e',
@@ -270,9 +273,9 @@ request.onreadystatechange = function () {
         datasets: [{
           label: "Temp1",
           lineTension: lineTensionValue,
-          backgroundColor: "rgba(255, 115, 223, 0.05)",
+          backgroundColor: "rgba(255, 115, 223, 0.4)",
           borderColor: "rgba(255, 115, 223, 1)",
-          pointRadius: 1,
+          pointRadius: 0, borderWidth: 1,
           pointBackgroundColor: "rgba(255, 115, 223, 1)",
           pointBorderColor: "rgba(255, 115, 223, 1)",
           pointHoverRadius: 3,
@@ -284,9 +287,9 @@ request.onreadystatechange = function () {
         }, {
           label: "Temp2",
           lineTension: lineTensionValue,
-          backgroundColor: "rgba(178, 115, 223, 0.05)",
+          backgroundColor: "rgba(178, 115, 223, 0.4)",
           borderColor: "rgba(178, 115, 223, 1)",
-          pointRadius: 1,
+          pointRadius: 0, borderWidth: 1,
           pointBackgroundColor: "rgba(178, 115, 223, 1)",
           pointBorderColor: "rgba(178, 115, 223, 1)",
           pointHoverRadius: 3,
@@ -298,9 +301,9 @@ request.onreadystatechange = function () {
         }, {
           label: "Temp3",
           lineTension: lineTensionValue,
-          backgroundColor: "rgba(0, 115, 223, 0.05)",
+          backgroundColor: "rgba(0, 115, 223, 0.4)",
           borderColor: "rgba(0, 115, 223, 1)",
-          pointRadius: 1,
+          pointRadius: 0, borderWidth: 1,
           pointBackgroundColor: "rgba(0, 115, 223, 1)",
           pointBorderColor: "rgba(0, 115, 223, 1)",
           pointHoverRadius: 3,
@@ -312,9 +315,9 @@ request.onreadystatechange = function () {
         }, {
           label: "Temp4",
           lineTension: lineTensionValue,
-          backgroundColor: "rgba(178, 0, 223, 0.05)",
+          backgroundColor: "rgba(178, 0, 223, 0.4)",
           borderColor: "rgba(178, 0, 223, 1)",
-          pointRadius: 1,
+          pointRadius: 0, borderWidth: 1,
           pointBackgroundColor: "rgba(178, 0, 223, 1)",
           pointBorderColor: "rgba(178, 0, 223, 1)",
           pointHoverRadius: 3,
@@ -327,28 +330,20 @@ request.onreadystatechange = function () {
       },
       options: {
         maintainAspectRatio: false,
-        layout: {
-          padding: {
-            left: 10,
-            right: 25,
-            top: 25,
-            bottom: 0
-          }
-        },
+
         scales: {
           xAxes: [{
+            type: 'time',
             time: {
-              unit: 'time'
+              unit: 'minute'
             },
             ticks: {
-              maxTicksLimit: 13,
-              reverse: true
+              maxTicksLimit: 7
             }
           }],
           yAxes: [{
             ticks: {
               maxTicksLimit: 5,
-              padding: 10,
               callback: function (value, index, values) {
                 return number_format(value, decimals = 1) + ' °C';
               }
@@ -366,7 +361,7 @@ request.onreadystatechange = function () {
           display: false
         },
         tooltips: {
-          backgroundColor: "rgb(255,255,255)",
+          backgroundColor: 'rgba(255, 255, 255, 0)',
           bodyFontColor: "#858796",
           titleMarginBottom: 10,
           titleFontColor: '#6e707e',
@@ -402,9 +397,9 @@ request.onreadystatechange = function () {
         datasets: [{
           label: "Remaincap",
           lineTension: lineTensionValue,
-          backgroundColor: "rgba(255, 115, 223, 0.05)",
+          backgroundColor: "rgba(255, 115, 223, 0.4)",
           borderColor: "rgba(255, 115, 223, 1)",
-          pointRadius: 1,
+          pointRadius: 0, borderWidth: 1,
           pointBackgroundColor: "rgba(255, 115, 223, 1)",
           pointBorderColor: "rgba(255, 115, 223, 1)",
           pointHoverRadius: 3,
@@ -417,28 +412,20 @@ request.onreadystatechange = function () {
       },
       options: {
         maintainAspectRatio: false,
-        layout: {
-          padding: {
-            left: 10,
-            right: 25,
-            top: 25,
-            bottom: 0
-          }
-        },
+
         scales: {
           xAxes: [{
+            type: 'time',
             time: {
-              unit: 'time'
+              unit: 'minute'
             },
             ticks: {
-              maxTicksLimit: 13,
-              reverse: true
+              maxTicksLimit: 7
             }
           }],
           yAxes: [{
             ticks: {
               maxTicksLimit: 5,
-              padding: 10,
               callback: function (value, index, values) {
                 return number_format(value, decimals = 1) + ' Ah';
               }
@@ -456,7 +443,7 @@ request.onreadystatechange = function () {
           display: false
         },
         tooltips: {
-          backgroundColor: "rgb(255,255,255)",
+          backgroundColor: 'rgba(255, 255, 255, 0.4)',
           bodyFontColor: "#858796",
           titleMarginBottom: 10,
           titleFontColor: '#6e707e',
@@ -483,6 +470,7 @@ request.onreadystatechange = function () {
 };
 
 function getBatData(value) {
+  sample = value;
   myLineChart1.destroy();
   myLineChart2.destroy();
   myLineChart3.destroy();

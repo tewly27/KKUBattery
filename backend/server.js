@@ -4,6 +4,7 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 8000;
 const fs = require('fs');
+const { log } = require("console");
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
@@ -27,23 +28,24 @@ pool.connect();
 
 // app.set('view engine', 'html');
 app.use(express.static(__dirname +"/fontend"));
-app.use('/a',express.static(__dirname +"/fontend"));
+app.use('/:tagID',express.static(__dirname +"/fontend"));
 
-app.get("/a/:tagId", (req, res) => {
-  // res.sendFile(__dirname +"/fontend/index.html");
-  fs.readFile("./fontend/index.html", 'utf8', (err, data) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    data = data.replace('<script>var batID = 1;</script>', '<script>var batID = ' + (req.params.tagId ? req.params.tagId : 1) + ';</script>'); //MODIFY THE FILE AS A STRING HERE
-    res.send(data)
-  });
+// app.get("/a/:tagId", (req, res) => {
+//   // res.sendFile(__dirname +"/fontend/index.html");
+//   fs.readFile("./fontend/index.html", 'utf8', (err, data) => {
+//     if (err) {
+//       console.error(err);
+//       return;
+//     }
+//     console.log('aaa'+ req.params.tagId)
+//     data = data.replace('<script>var batID = 1;</script>', '<script>var batID = ' + (req.params.tagId ? req.params.tagId : 1) + ';</script>'); //MODIFY THE FILE AS A STRING HERE
+//     res.send(data)
+//   });
   
 
 
 
-});
+// });
 
 // app.get('/batinfo/:tagId', (req, res) => {
 //   try {
@@ -74,9 +76,9 @@ app.post('/batinfo/:tagId', (req, res) => {
       sample = req.body.sample
     }
 
-    console.log(req.body)
+    // console.log(req.body)
     pool.query(
-      'select voltage,current,date,time,temp1,temp2,temp3,temp4,cycle,SOC,remaincap from public.battery where id = ' + id + '  order by (date + time) desc limit ' + sample,
+      "select voltage,current,TO_CHAR(date,'YYYY-MM-DD') date,time,temp1,temp2,temp3,temp4,cycle,SOC,remaincap from public.battery where id = " + id + "  order by (date + time) desc limit " + sample,
       (err, res2) => {
         res.json(res2);
       })
@@ -85,7 +87,7 @@ app.post('/batinfo/:tagId', (req, res) => {
   }
 })
 
-app.post('/users', (req, res) => {
+app.post('/addData', (req, res) => {
   // users.push(req.body)
   let json = req.body
   console.log(json)

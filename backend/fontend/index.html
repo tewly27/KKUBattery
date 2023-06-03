@@ -224,7 +224,7 @@
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1" >
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                                 Max Temperature</div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800" id="maxtemp">18</div>
                                         </div>
@@ -268,7 +268,7 @@
                                     <div class="form-group">
                                         <label for="sample">Sample Size</label>
                                         <input type="email" class="form-control" id="sample"
-                                            aria-describedby="emailHelp" placeholder="100">
+                                            aria-describedby="emailHelp" placeholder="200">
                                     </div>
                                     <button class="btn btn-primary"
                                         onclick="getBatData($('#sample').val());">Submit</button>
@@ -467,6 +467,8 @@
 
     <!-- Page level plugins -->
     <script src="vendor/chart.js/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@^2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@^1"></script>
 
     <!-- Page level custom scripts -->
     <script src="js/demo/chart-area-demo.js"></script>

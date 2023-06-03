@@ -9,18 +9,3 @@ function init() {
   map.Overlays.add(marker);
 }
 
-// let requestCycle = new XMLHttpRequest();
-
-// requestCycle.onreadystatechange = function () {
-//   if (this.readyState === 4 && this.status === 200) {
-//     label2 = []
-//     data2 = []
-//     data3 = []
-//     const response = JSON.parse(this.responseText);
-//     var cycle = document.getElementById("cycle");
-
-//   }
-// }
-
-// requestCycle.open("GET", "http://127.0.0.1:8000/cycle/1", true);
-// requestCycle.send();
