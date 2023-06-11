@@ -3,12 +3,12 @@ const Pool = require('pg').Pool;
 const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 8000;
-const fs = require('fs');
-const { log } = require("console");
+const https = require('https');
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-
+const url = 'https://en.wikipedia.org/wiki/List_of_Presidents_of_the_United_States';
 
 app.use(cors({
   origin: '*'
@@ -26,82 +26,77 @@ const pool = new Pool({
 pool.connect();
 //////////////////
 
-// app.set('view engine', 'html');
-app.use(express.static(__dirname +"/fontend"));
-app.use('/:tagID',express.static(__dirname +"/fontend"));
-
-// app.get("/a/:tagId", (req, res) => {
-//   // res.sendFile(__dirname +"/fontend/index.html");
-//   fs.readFile("./fontend/index.html", 'utf8', (err, data) => {
-//     if (err) {
-//       console.error(err);
-//       return;
-//     }
-//     console.log('aaa'+ req.params.tagId)
-//     data = data.replace('<script>var batID = 1;</script>', '<script>var batID = ' + (req.params.tagId ? req.params.tagId : 1) + ';</script>'); //MODIFY THE FILE AS A STRING HERE
-//     res.send(data)
-//   });
-  
+app.use(express.static(__dirname + "/fontend"));
+app.use('/:tagID', express.static(__dirname + "/fontend"));
 
 
+const g2 = ["seconds", "minutes", "hours", "days", "weeks", "months", "year"];
 
-// });
-
-// app.get('/batinfo/:tagId', (req, res) => {
-//   try {
-//     var id = req.params.tagId
-//     sample = 100
-
-//     if (req.body.sample) {
-//       sample = req.body.sample
-//     }
-
-//     // console.log(req.body)
-//     pool.query(
-//       'select voltage,current,date,time,temp1,temp2,temp3,temp4,cycle,SOC,remaincap from public.battery where id = ' + id + '  order by (date + time) desc limit ' + sample,
-//       (err, res2) => {
-//         res.json(res2);
-//       })
-//   } catch (error) {
-
-//   }
-// })
 
 app.post('/batinfo/:tagId', (req, res) => {
   try {
     var id = req.params.tagId
-    sample = 100
 
-    if (req.body.sample) {
+    sample = 1
+    sub = 1
+    num_sample = 60
+    if (req.body.sub != null) {
+      sub = req.body.sub
+    }
+    if (req.body.sample != null) {
       sample = req.body.sample
     }
+    if (req.body.num_sample != null) {
+      num_sample = req.body.num_sample
+    }
+    if (req.body.id != null) {
+      id = req.body.id
+    }
+    var cells = " ";
 
-    // console.log(req.body)
+
+    sq =
+      "select avg(voltage) voltage,round(avg(current)::numeric,2)current " +
+      ", date_trunc('" + g2[sample] + "', date+time) + round(extract(seconds FROM time) / " + sub + ")*" + sub + " * interval '1 second' datetime , " +
+      "avg(temp1)temp1,avg(temp2)temp2,avg(temp3)temp3, " +
+      "avg(temp4)temp4,round(avg(cycle)::numeric,2)cycle,round(avg(SOC)::numeric,2)SOC,round(avg(remaincap)::numeric)remaincap " +
+
+      " from public.battery " +
+      "where id = " + id +
+      " group by datetime " +
+      "order by datetime desc limit  " + num_sample;
+    // console.log(sq)
     pool.query(
-      "select voltage,current,TO_CHAR(date,'YYYY-MM-DD') date,time,temp1,temp2,temp3,temp4,cycle,SOC,remaincap from public.battery where id = " + id + "  order by (date + time) desc limit " + sample,
+      sq,
       (err, res2) => {
+
         res.json(res2);
       })
   } catch (error) {
-
+    console.error(error)
   }
 })
+
+
+
+
+
 
 app.post('/addData', (req, res) => {
   // users.push(req.body)
   let json = req.body
-  console.log(json)
+  // console.log(json)
 
   // if (isNaN(Number(req.body.id))) {
   //   return res.status(400).json({ err: "Numbers only, please!" });
   // }
   try {
 
-    pool.connect();
+    // pool.connect();
     pool.query(
-      'INSERT INTO public.battery (id, date, time, voltage, current, cell1, cell2, cell3, cell4, cell5, cell6, cell7, cell8, cell9, cell10, cell11, cell12, cell13, avg_cell, max_cell, min_cell, soc, remaincap, fcc, cycle, temp1, temp2, temp3, temp4, c_fet, d_fet, protectstatus, balancestatus) ' +
-      'VALUES (1,"18/05/2023","13:50:10",50.49,7.47,3.867,3.887,3.885,3.886,3.883,3.887,3.884,3.885,3.884,3.883,3.886,3.885,3.89,3.884,3.89,3.867,67,27000,40000,0,37.5,37.5,37.4,37.1,"ON","ON",null,0);',
-      (err, res2) => {
+      "INSERT INTO public.battery (id, date, time, voltage, current, cell1, cell2, cell3, cell4, cell5, cell6, cell7, cell8, cell9, cell10, cell11, cell12, cell13, avg_cell, max_cell, min_cell, soc, remaincap, fcc, cycle, temp1, temp2, temp3, temp4, c_fet, d_fet, protectstatus, balancestatus) " +
+      "(2,'18/05/2023','13:50:10',50.49,7.47,3.867,3.887,3.885,3.886,3.883,3.887,3.884,3.885,3.884,3.883,3.886,3.885,3.89,3.884,3.89,3.867,67,27000,40000,0,37.5,37.5,37.4,37.1,'ON','ON',null,0)"
+      , (err, res2) => {
         // pool.end();
       })
     res.send(`Add data completed.`)

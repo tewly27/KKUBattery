@@ -27,13 +27,7 @@ function number_format(number, decimals, dec_point, thousands_sep) {
   return s.join(dec);
 }
 
-if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-  // true for mobile device
-  console.log("mobile device");
-} else {
-  // false for not mobile device
-  console.log("not mobile device");
-}
+
 
 label2 = [1, 2]
 data2 = [1, 1]
@@ -44,9 +38,11 @@ var myLineChart1;
 var myLineChart2;
 var myLineChart3;
 var myLineChart4;
-var sample=200;
+var sample = 0;
+var num_sample = 600;
 let request = new XMLHttpRequest();
-const url = window.location.protocol + '//' + window.location.host + '/batinfo/' + (window.location.hash ? window.location.hash.split('#')[1] : 1);
+var url = window.location.protocol + '//' + window.location.host + '/batinfo/' + (window.location.hash ? window.location.hash.split('#')[1] : 1);
+// var url = "https://iot.jiabaida.com/js/chunk-elementUI.842b8168.js"
 
 allchart = []
 Array.prototype.max = function () {
@@ -61,24 +57,27 @@ request.onreadystatechange = function () {
     data3 = []
     data4 = [[], [], [], []]
     data5 = []
+    data6 = []
+    data7 = []
 
     const response = JSON.parse(this.responseText);
 
-    row_count =  response.rows.length;
-
+    row_count = response.rows.length;
     response.rows.forEach(element => {
       i = 0
-      label2.push(new Date(element.date + ' ' + element.time))
+      label2.push(new Date(element.datetime))
       data2.push(element.voltage)
       data3.push(element.current)
-      data4[0].push((data4[0].length > 0 ? (data4[0][data4[0].length - 1] * ((row_count/20)-1) + element.temp1) / (row_count/20) : element.temp1))
-      data4[1].push((data4[1].length > 0 ? (data4[1][data4[1].length - 1] * ((row_count/20)-1) + element.temp2) / (row_count/20) : element.temp2))
-      data4[2].push((data4[2].length > 0 ? (data4[2][data4[2].length - 1] * ((row_count/20)-1) + element.temp3) / (row_count/20) : element.temp3))
-      data4[3].push((data4[3].length > 0 ? (data4[3][data4[3].length - 1] * ((row_count/20)-1) + element.temp4) / (row_count/20) : element.temp4))
+      data4[0].push((data4[0].length > 0 ? (data4[0][data4[0].length - 1] * ((row_count / 20) - 1) + element.temp1) / (row_count / 20) : element.temp1))
+      data4[1].push((data4[1].length > 0 ? (data4[1][data4[1].length - 1] * ((row_count / 20) - 1) + element.temp2) / (row_count / 20) : element.temp2))
+      data4[2].push((data4[2].length > 0 ? (data4[2][data4[2].length - 1] * ((row_count / 20) - 1) + element.temp3) / (row_count / 20) : element.temp3))
+      data4[3].push((data4[3].length > 0 ? (data4[3][data4[3].length - 1] * ((row_count / 20) - 1) + element.temp4) / (row_count / 20) : element.temp4))
       data5.push(element.remaincap)
+      data6.push(element.cell1)
+      data7.push(element.cell2)
     });
 
-    console.log(response.rows)
+    
 
     document.getElementById("cycle").textContent = response.rows[0].cycle;
     document.getElementById("soc").textContent = response.rows[0].soc + "%";
@@ -92,9 +91,8 @@ request.onreadystatechange = function () {
     lineTensionValue = 0.3
 
     // Area Chart Example
+
     var ctx = document.getElementById("myAreaChart");
-
-
     myLineChart1 = new Chart(ctx, {
       type: 'line',
       data: {
@@ -466,20 +464,24 @@ request.onreadystatechange = function () {
       }
     });
 
+
+
   }
 };
 
-function getBatData(value) {
-  sample = value;
+function getBatData(s,ns,sub,id) {
+  sample = s;
+
   myLineChart1.destroy();
   myLineChart2.destroy();
   myLineChart3.destroy();
   myLineChart4.destroy();
   request.open('POST', url, true);
   request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-  request.send('{"sample":' + value + '}');
+  request.send('{"sample":' + s + ',"num_sample":'+ns+',"sub":'+sub+',"id":'+id+'}');
 }
+
 request.open('POST', url, true);
 request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-request.send('{"sample":200}');
+request.send('{"sample":1,"num_sample":600}');
 
