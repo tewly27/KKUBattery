@@ -2,7 +2,7 @@ const express = require("express");
 const Pool = require('pg').Pool;
 const cors = require('cors');
 const app = express();
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8080;
 const https = require('https');
 
 app.use(express.json())
