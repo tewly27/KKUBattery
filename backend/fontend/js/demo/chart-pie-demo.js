@@ -8,13 +8,63 @@ var myPieChart = new Chart(ctx, {
   type: 'doughnut',
   data: {
     datasets: [{
-      data: [55, 30],
-      backgroundColor: ['#4e73df', '#FFFFFF'],
-      hoverBackgroundColor: ['#2e59d9', '#17a673'],
-      hoverBorderColor: "rgba(234, 236, 244, 1)",
+      data: [50, 30, 20],
+      backgroundColor: ['#4e73df', '#DDDDDD', '#FFFFFF']
     }],
   },
   options: {
+    rotation:0.7 * Math.PI,
+    maintainAspectRatio: false,
+    tooltips: {
+      backgroundColor: "rgb(255,255,255)",
+      bodyFontColor: "#858796",
+      borderColor: '#dddfeb',
+      displayColors: false,
+    },
+    legend: {
+      display: false
+    },
+    cutoutPercentage: 80,
+  },
+});
+
+
+var ctx = document.getElementById("myPieChart2");
+var myPieChart2 = new Chart(ctx, {
+  type: 'doughnut',
+  data: {
+    datasets: [{
+      data: [50, 30, 20],
+      backgroundColor: ['#4e73df', '#DDDDDD', '#FFFFFF']
+    }],
+  },
+  options: {
+    rotation:0.7 * Math.PI,
+    maintainAspectRatio: false,
+    tooltips: {
+      backgroundColor: "rgb(255,255,255)",
+      bodyFontColor: "#858796",
+      borderColor: '#dddfeb',
+      displayColors: false,
+    },
+    legend: {
+      display: false
+    },
+    cutoutPercentage: 80,
+  },
+});
+
+var ctx = document.getElementById("myPieChart3");
+var myPieChart3 = new Chart(ctx, {
+  type: 'doughnut',
+  data: {
+    datasets: [{
+      data: [20, 60, 20],
+      backgroundColor: ['#4e73df', '#DDDDDD', '#FFFFFF']
+    }],
+  },
+  options: {
+    rotation:0.7 * Math.PI,
     maintainAspectRatio: false,
     tooltips: {
       backgroundColor: "rgb(255,255,255)",

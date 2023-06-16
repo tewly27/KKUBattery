@@ -4,6 +4,8 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 8080;
 const https = require('https');
+const FormData = require('form-data');
+const axios = require('axios');
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -16,8 +18,8 @@ app.use(cors({
 
 //////////////////
 const pool = new Pool({
-  host: 'local_pgdb',
-  // host: 'localhost',
+  // host: 'local_pgdb',
+  host: 'localhost',
   database: 'admin',
   user: 'admin',
   password: 'k304298',
@@ -32,6 +34,24 @@ app.use('/:tagID', express.static(__dirname + "/fontend"));
 
 const g2 = ["seconds", "minutes", "hours", "days", "weeks", "months", "year"];
 
+
+
+const formData = new FormData();
+formData.append('username', 'VP');
+formData.append('password', '123456');
+axios({
+  method: 'post',
+  url: 'https://iot.jiabaida.com/api/login',
+  headers: {
+    'Content-Type': 'multipart/form-data; boundary=' + formData.getBoundary(),
+    'cookie': 'SESSION=NDM2MTY4MDQtNmI3NC00YWQ2LWEyZTMtZmNiZTJkYzk3Y2Y5'
+  },
+  data: formData,
+  withCredentials: true
+})
+  .then(function (response) {
+    console.log(response)
+  });
 
 app.post('/batinfo/:tagId', (req, res) => {
   try {
@@ -77,7 +97,33 @@ app.post('/batinfo/:tagId', (req, res) => {
   }
 })
 
+app.get('/readJBD/:tagId', (req, res) => {
+  // default
+  var imei = '0868755123660953'
+  // var imei = '0868755123661050'
+  // console.log(req.params.tagId)
+  if (req.params.tagId) {
+    imei = req.params.tagId
+  }
+  try {
+    axios({
+      method: 'get',
+      url: 'https://iot.jiabaida.com/api/device/queryPaging?query=%7B%22currentPage%22%3A1%2C%22pageSize%22%3A20%2C%22paramMap%22%3A%7B%22selectCustomerId%22%3Anull%2C%22imei%22%3A'+imei+'%2C%22isIncludingSub%22%3A0%2C%22status%22%3Anull%2C%22siteName%22%3Anull%2C%22rentStatus%22%3Anull%2C%22deviceGroupIdList%22%3A%5B%5D%2C%22deviceModelId%22%3Anull%2C%22iccid%22%3Anull%2C%22rentExpireDate%22%3Anull%2C%22offlineHours%22%3A0%2C%22offlineStartTime%22%3Anull%2C%22offlineEndTime%22%3Anull%2C%22rentTel%22%3Anull%2C%22transferBatchNo%22%3A%22%22%2C%22statusLabel%22%3Anull%2C%22alarmType%22%3Anull%2C%22activateTimedown%22%3Anull%2C%22activateTimeup%22%3Anull%2C%22rentStartTimedown%22%3Anull%2C%22rentStartTimeup%22%3Anull%2C%22rentStartTime%22%3A%22descending%22%2C%22name%22%3A%22%22%2C%22activateTime%22%3Anull%2C%22lastHeartbeatDate%22%3Anull%2C%22gpsTypeId%22%3Anull%2C%22reportManageId%22%3Anull%7D%7D'
+      , headers: {
+        'cookie': 'SESSION=NDM2MTY4MDQtNmI3NC00YWQ2LWEyZTMtZmNiZTJkYzk3Y2Y5'
+      },
+    })
+    .then(function (response) {
+      // console.log(response.data)
+      res.send(response.data)
+    });
 
+
+
+  } catch (error) {
+
+  }
+})
 
 
 

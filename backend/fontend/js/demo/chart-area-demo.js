@@ -41,13 +41,21 @@ var myLineChart4;
 var sample = 0;
 var num_sample = 600;
 let request = new XMLHttpRequest();
-var url = window.location.protocol + '//' + window.location.host + '/batinfo/' + (window.location.hash ? window.location.hash.split('#')[1] : 1);
-// var url = "https://iot.jiabaida.com/js/chunk-elementUI.842b8168.js"
+let request2 = new XMLHttpRequest();
+var url = window.location.protocol + '//' + window.location.host + '/batinfo/' + '1';
+
 
 allchart = []
 Array.prototype.max = function () {
   return Math.max.apply(null, this);
 };
+request2.onreadystatechange = function () {
+  if (this.readyState === 4 && this.status === 200) {
+    const response = JSON.parse(this.responseText);
+    console.log(response.records[0].collectBasicInfo)
+  }
+};
+
 
 request.onreadystatechange = function () {
   if (this.readyState === 4 && this.status === 200) {
@@ -485,3 +493,5 @@ request.open('POST', url, true);
 request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
 request.send('{"sample":1,"num_sample":600}');
 
+// request2.open('GET', window.location.protocol + '//' + window.location.host +'/readJBD/'+ (window.location.hash ? window.location.hash.split('#')[1] : '0868755123661050'), true);
+// request2.send();
