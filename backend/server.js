@@ -183,7 +183,7 @@ app.post('/addData', (req, res) => {
 })
 
 
-app.listen(port ,() => {
+app.listen(port,'0.0.0.0' ,() => {
   console.log(`Starting node.js at port ${port}`);
 });
 
