@@ -64,6 +64,13 @@ request2.onreadystatechange = function () {
     document.getElementById("current").textContent = response.records[0].collectBasicInfo.packCurrent + " A";
     document.getElementById("power").textContent = response.records[0].collectBasicInfo.packPower + " W";
 
+    myPieChart.data.datasets[0].data = [response.records[0].collectBasicInfo.rsoc *0.8,(100-response.records[0].collectBasicInfo.rsoc)*0.8,20]
+    myPieChart.update();
+    myPieChart2.data.datasets[0].data = [response.records[0].collectBasicInfo.rsoc *0.8,(100-response.records[0].collectBasicInfo.rsoc)*0.8,20]
+    myPieChart2.update();
+    myPieChart3.data.datasets[0].data = [response.records[0].collectBasicInfo.NTCs.max() *0.8,(100-response.records[0].collectBasicInfo.NTCs.max())*0.8,20]
+    myPieChart3.update();
+
     request3.open('GET', window.location.protocol + '//' + window.location.host + '/readGPS/' + response.records[0].id, true);
     deviceID = response.records[0].id
     request3.send();

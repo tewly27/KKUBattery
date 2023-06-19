@@ -8,7 +8,7 @@ var myPieChart = new Chart(ctx, {
   type: 'doughnut',
   data: {
     datasets: [{
-      data: [50, 30, 20],
+      data: [0, 80, 20],
       backgroundColor: ['#4e73df', '#DDDDDD', '#FFFFFF']
     }],
   },
@@ -34,7 +34,7 @@ var myPieChart2 = new Chart(ctx, {
   type: 'doughnut',
   data: {
     datasets: [{
-      data: [50, 30, 20],
+      data: [0, 80, 20],
       backgroundColor: ['#4e73df', '#DDDDDD', '#FFFFFF']
     }],
   },
@@ -59,7 +59,7 @@ var myPieChart3 = new Chart(ctx, {
   type: 'doughnut',
   data: {
     datasets: [{
-      data: [20, 60, 20],
+      data: [0, 80, 20],
       backgroundColor: ['#4e73df', '#DDDDDD', '#FFFFFF']
     }],
   },
