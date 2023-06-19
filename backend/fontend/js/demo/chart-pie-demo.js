@@ -16,10 +16,7 @@ var myPieChart = new Chart(ctx, {
     rotation:0.7 * Math.PI,
     maintainAspectRatio: false,
     tooltips: {
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
-      borderColor: '#dddfeb',
-      displayColors: false,
+      enabled: false
     },
     legend: {
       display: false
@@ -42,10 +39,7 @@ var myPieChart2 = new Chart(ctx, {
     rotation:0.7 * Math.PI,
     maintainAspectRatio: false,
     tooltips: {
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
-      borderColor: '#dddfeb',
-      displayColors: false,
+      enabled: false
     },
     legend: {
       display: false
@@ -67,10 +61,7 @@ var myPieChart3 = new Chart(ctx, {
     rotation:0.7 * Math.PI,
     maintainAspectRatio: false,
     tooltips: {
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
-      borderColor: '#dddfeb',
-      displayColors: false,
+      enabled: false
     },
     legend: {
       display: false
