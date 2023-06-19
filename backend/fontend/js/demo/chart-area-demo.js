@@ -39,9 +39,11 @@ var myLineChart2;
 var myLineChart3;
 var myLineChart4;
 var sample = 0;
+var deviceID;
 var num_sample = 600;
 let request = new XMLHttpRequest();
 let request2 = new XMLHttpRequest();
+let request3 = new XMLHttpRequest();
 var url = window.location.protocol + '//' + window.location.host + '/batinfo/' + '1';
 
 
@@ -52,10 +54,35 @@ Array.prototype.max = function () {
 request2.onreadystatechange = function () {
   if (this.readyState === 4 && this.status === 200) {
     const response = JSON.parse(this.responseText);
-    console.log(response.records[0].collectBasicInfo)
+    console.log(response.records[0])
+    // console.log(response)
+
+    document.getElementById("soc").textContent = response.records[0].collectBasicInfo.rsoc + "%";
+    document.getElementById("remaincap").textContent = response.records[0].collectBasicInfo.remainingCapacity + " Ah";
+    document.getElementById("maxtemp").textContent = response.records[0].collectBasicInfo.NTCs.max() + ' °C';
+    document.getElementById("voltage").textContent = response.records[0].collectBasicInfo.packVoltage + " V";
+    document.getElementById("current").textContent = response.records[0].collectBasicInfo.packCurrent + " A";
+    document.getElementById("power").textContent = response.records[0].collectBasicInfo.packPower + " W";
+
+    request3.open('GET', window.location.protocol + '//' + window.location.host + '/readGPS/' + response.records[0].id, true);
+    deviceID = response.records[0].id
+    request3.send();
   }
 };
+request3.onreadystatechange = function () {
+  if (this.readyState === 4 && this.status === 200) {
+    const response = JSON.parse(this.responseText);
+    // console.log(response.records[0].collectBasicInfo)
+    console.log(response[deviceID].point.lat)
+    var position = { lat: response[deviceID].point.lat, lon: response[deviceID].point.lng }
+    var marker = new longdo.Marker(position);
+    map.location(position, true);
+    map.Overlays.add(marker);
 
+
+
+  }
+};
 
 request.onreadystatechange = function () {
   if (this.readyState === 4 && this.status === 200) {
@@ -85,98 +112,98 @@ request.onreadystatechange = function () {
       data7.push(element.cell2)
     });
 
-    
 
-    document.getElementById("cycle").textContent = response.rows[0].cycle;
+
+    // document.getElementById("cycle").textContent = response.rows[0].cycle;
     document.getElementById("soc").textContent = response.rows[0].soc + "%";
-    document.getElementById("socbar").style = "width: " + response.rows[0].soc + "%";
+    // document.getElementById("socbar").style = "width: " + response.rows[0].soc + "%";
     document.getElementById("remaincap").textContent = response.rows[0].remaincap + " Ah";
-    document.getElementById("remaincapbar").style = "width: " + response.rows[0].soc + "%";
+    // document.getElementById("remaincapbar").style = "width: " + response.rows[0].soc + "%";
     document.getElementById("maxtemp").textContent = Math.max(data4[0].concat(data4[1], data4[2], data4[3]).max()).toFixed(2) + ' °C';
-
-
-
+    document.getElementById("voltage").textContent = response.rows[0].voltage + " V";
+    document.getElementById("current").textContent = response.rows[0].voltage + " A";
+    document.getElementById("power").textContent = response.rows[0].voltage + " W";
     lineTensionValue = 0.3
 
     // Area Chart Example
 
-    var ctx = document.getElementById("myAreaChart");
-    myLineChart1 = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: label2,
-        datasets: [{
-          label: "Voltage",
-          lineTension: lineTensionValue,
-          backgroundColor: "rgba(78, 115, 223, 0.2)",
-          borderColor: "rgba(78, 115, 223, 1)",
-          borderWidth: 1,
-          pointRadius: 0,
-          pointBackgroundColor: "rgba(78, 115, 223, 1)",
-          pointBorderColor: "rgba(78, 115, 223, 1)",
-          pointHoverRadius: 3,
-          pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-          pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-          pointHitRadius: 10,
-          pointBorderWidth: 2,
-          data: data2,
-        }],
-      },
-      options: {
-        maintainAspectRatio: false,
+    // var ctx = document.getElementById("myAreaChart");
+    // myLineChart1 = new Chart(ctx, {
+    //   type: 'line',
+    //   data: {
+    //     labels: label2,
+    //     datasets: [{
+    //       label: "Voltage",
+    //       lineTension: lineTensionValue,
+    //       backgroundColor: "rgba(78, 115, 223, 0.2)",
+    //       borderColor: "rgba(78, 115, 223, 1)",
+    //       borderWidth: 1,
+    //       pointRadius: 0,
+    //       pointBackgroundColor: "rgba(78, 115, 223, 1)",
+    //       pointBorderColor: "rgba(78, 115, 223, 1)",
+    //       pointHoverRadius: 3,
+    //       pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+    //       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+    //       pointHitRadius: 10,
+    //       pointBorderWidth: 2,
+    //       data: data2,
+    //     }],
+    //   },
+    //   options: {
+    //     maintainAspectRatio: false,
 
-        scales: {
-          xAxes: [{
-            type: 'time',
-            time: {
-              unit: 'minute'
-            },
-            ticks: {
-              maxTicksLimit: 7
-            }
-          }],
-          yAxes: [{
-            ticks: {
-              maxTicksLimit: 5,
-              callback: function (value, index, values) {
-                return number_format(value) + ' V';
-              }
-            },
-            gridLines: {
-              color: "rgb(234, 236, 244)",
-              zeroLineColor: "rgb(234, 236, 244)",
-              drawBorder: false,
-              borderDash: [2],
-              zeroLineBorderDash: [2]
-            }
-          }],
-        },
-        legend: {
-          display: false
-        },
-        tooltips: {
-          backgroundColor: 'rgba(255, 255, 255, 0.4)',
-          bodyFontColor: "#858796",
-          titleMarginBottom: 10,
-          titleFontColor: '#6e707e',
-          titleFontSize: 14,
-          borderColor: '#dddfeb',
-          borderWidth: 1,
-          xPadding: 15,
-          yPadding: 15,
-          displayColors: false,
-          intersect: false,
-          mode: 'index',
-          caretPadding: 10,
-          callbacks: {
-            label: function (tooltipItem, chart) {
-              var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-              return datasetLabel + ' ' + number_format(tooltipItem.yLabel, decimals = 2) + ' V';
-            }
-          }
-        }
-      }
-    });
+    //     scales: {
+    //       xAxes: [{
+    //         type: 'time',
+    //         time: {
+    //           unit: 'minute'
+    //         },
+    //         ticks: {
+    //           maxTicksLimit: 7
+    //         }
+    //       }],
+    //       yAxes: [{
+    //         ticks: {
+    //           maxTicksLimit: 5,
+    //           callback: function (value, index, values) {
+    //             return number_format(value) + ' V';
+    //           }
+    //         },
+    //         gridLines: {
+    //           color: "rgb(234, 236, 244)",
+    //           zeroLineColor: "rgb(234, 236, 244)",
+    //           drawBorder: false,
+    //           borderDash: [2],
+    //           zeroLineBorderDash: [2]
+    //         }
+    //       }],
+    //     },
+    //     legend: {
+    //       display: false
+    //     },
+    //     tooltips: {
+    //       backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    //       bodyFontColor: "#858796",
+    //       titleMarginBottom: 10,
+    //       titleFontColor: '#6e707e',
+    //       titleFontSize: 14,
+    //       borderColor: '#dddfeb',
+    //       borderWidth: 1,
+    //       xPadding: 15,
+    //       yPadding: 15,
+    //       displayColors: false,
+    //       intersect: false,
+    //       mode: 'index',
+    //       caretPadding: 10,
+    //       callbacks: {
+    //         label: function (tooltipItem, chart) {
+    //           var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+    //           return datasetLabel + ' ' + number_format(tooltipItem.yLabel, decimals = 2) + ' V';
+    //         }
+    //       }
+    //     }
+    //   }
+    // });
 
 
 
@@ -186,84 +213,84 @@ request.onreadystatechange = function () {
 
 
 
-    var ctx = document.getElementById("myAreaChart2");
-    myLineChart2 = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: label2,
-        datasets: [{
-          label: "Current",
-          lineTension: lineTensionValue,
-          backgroundColor: "rgba(178, 115, 223, 0.4)",
-          borderColor: "rgba(178, 115, 223, 1)",
-          pointRadius: 0,
-          borderWidth: 1,
-          pointBackgroundColor: "rgba(178, 115, 223, 1)",
-          pointBorderColor: "rgba(178, 115, 223, 1)",
-          pointHoverRadius: 3,
-          pointHoverBackgroundColor: "rgba(178, 115, 223, 1)",
-          pointHoverBorderColor: "rgba(178, 115, 223, 1)",
-          pointHitRadius: 10,
-          pointBorderWidth: 2,
-          data: data3,
-        }],
-      },
-      options: {
-        maintainAspectRatio: false,
+    // var ctx = document.getElementById("myAreaChart2");
+    // myLineChart2 = new Chart(ctx, {
+    //   type: 'line',
+    //   data: {
+    //     labels: label2,
+    //     datasets: [{
+    //       label: "Current",
+    //       lineTension: lineTensionValue,
+    //       backgroundColor: "rgba(178, 115, 223, 0.4)",
+    //       borderColor: "rgba(178, 115, 223, 1)",
+    //       pointRadius: 0,
+    //       borderWidth: 1,
+    //       pointBackgroundColor: "rgba(178, 115, 223, 1)",
+    //       pointBorderColor: "rgba(178, 115, 223, 1)",
+    //       pointHoverRadius: 3,
+    //       pointHoverBackgroundColor: "rgba(178, 115, 223, 1)",
+    //       pointHoverBorderColor: "rgba(178, 115, 223, 1)",
+    //       pointHitRadius: 10,
+    //       pointBorderWidth: 2,
+    //       data: data3,
+    //     }],
+    //   },
+    //   options: {
+    //     maintainAspectRatio: false,
 
-        scales: {
-          xAxes: [{
-            type: 'time',
-            time: {
-              unit: 'minute'
-            },
-            ticks: {
-              maxTicksLimit: 7
-            }
-          }],
-          yAxes: [{
-            ticks: {
-              maxTicksLimit: 5,
-              // Include a dollar sign in the ticks
-              callback: function (value, index, values) {
-                return number_format(value) + ' A';
-              }
-            },
-            gridLines: {
-              color: "rgb(234, 236, 244)",
-              zeroLineColor: "rgb(234, 236, 244)",
-              drawBorder: false,
-              borderDash: [2],
-              zeroLineBorderDash: [2]
-            }
-          }],
-        },
-        legend: {
-          display: false
-        },
-        tooltips: {
-          backgroundColor: 'rgba(255, 255, 255, 0.4)',
-          bodyFontColor: "#858796",
-          titleMarginBottom: 10,
-          titleFontColor: '#6e707e',
-          titleFontSize: 14,
-          borderColor: '#dddfeb',
-          borderWidth: 1,
-          xPadding: 15,
-          yPadding: 15,
-          displayColors: false,
-          intersect: false,
-          mode: 'index',
-          caretPadding: 10,
-          callbacks: {
-            label: function (tooltipItem, chart) {
-              var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-              return datasetLabel + ' ' + number_format(tooltipItem.yLabel, decimals = 2) + ' A';
-            }
-          }
-        }
-      }
-    });
+    //     scales: {
+    //       xAxes: [{
+    //         type: 'time',
+    //         time: {
+    //           unit: 'minute'
+    //         },
+    //         ticks: {
+    //           maxTicksLimit: 7
+    //         }
+    //       }],
+    //       yAxes: [{
+    //         ticks: {
+    //           maxTicksLimit: 5,
+    //           // Include a dollar sign in the ticks
+    //           callback: function (value, index, values) {
+    //             return number_format(value) + ' A';
+    //           }
+    //         },
+    //         gridLines: {
+    //           color: "rgb(234, 236, 244)",
+    //           zeroLineColor: "rgb(234, 236, 244)",
+    //           drawBorder: false,
+    //           borderDash: [2],
+    //           zeroLineBorderDash: [2]
+    //         }
+    //       }],
+    //     },
+    //     legend: {
+    //       display: false
+    //     },
+    //     tooltips: {
+    //       backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    //       bodyFontColor: "#858796",
+    //       titleMarginBottom: 10,
+    //       titleFontColor: '#6e707e',
+    //       titleFontSize: 14,
+    //       borderColor: '#dddfeb',
+    //       borderWidth: 1,
+    //       xPadding: 15,
+    //       yPadding: 15,
+    //       displayColors: false,
+    //       intersect: false,
+    //       mode: 'index',
+    //       caretPadding: 10,
+    //       callbacks: {
+    //         label: function (tooltipItem, chart) {
+    //           var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+    //           return datasetLabel + ' ' + number_format(tooltipItem.yLabel, decimals = 2) + ' A';
+    //         }
+    //       }
+    //     }
+    //   }
+    // });
 
 
     //////////////////////////
@@ -271,227 +298,228 @@ request.onreadystatechange = function () {
 
 
 
-    var ctx = document.getElementById("myAreaChart3");
-    myLineChart3 = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: label2,
-        datasets: [{
-          label: "Temp1",
-          lineTension: lineTensionValue,
-          backgroundColor: "rgba(255, 115, 223, 0.4)",
-          borderColor: "rgba(255, 115, 223, 1)",
-          pointRadius: 0, borderWidth: 1,
-          pointBackgroundColor: "rgba(255, 115, 223, 1)",
-          pointBorderColor: "rgba(255, 115, 223, 1)",
-          pointHoverRadius: 3,
-          pointHoverBackgroundColor: "rgba(255, 115, 223, 1)",
-          pointHoverBorderColor: "rgba(255, 115, 223, 1)",
-          pointHitRadius: 10,
-          pointBorderWidth: 2,
-          data: data4[0],
-        }, {
-          label: "Temp2",
-          lineTension: lineTensionValue,
-          backgroundColor: "rgba(178, 115, 223, 0.4)",
-          borderColor: "rgba(178, 115, 223, 1)",
-          pointRadius: 0, borderWidth: 1,
-          pointBackgroundColor: "rgba(178, 115, 223, 1)",
-          pointBorderColor: "rgba(178, 115, 223, 1)",
-          pointHoverRadius: 3,
-          pointHoverBackgroundColor: "rgba(178, 115, 223, 1)",
-          pointHoverBorderColor: "rgba(178, 115, 223, 1)",
-          pointHitRadius: 10,
-          pointBorderWidth: 2,
-          data: data4[1],
-        }, {
-          label: "Temp3",
-          lineTension: lineTensionValue,
-          backgroundColor: "rgba(0, 115, 223, 0.4)",
-          borderColor: "rgba(0, 115, 223, 1)",
-          pointRadius: 0, borderWidth: 1,
-          pointBackgroundColor: "rgba(0, 115, 223, 1)",
-          pointBorderColor: "rgba(0, 115, 223, 1)",
-          pointHoverRadius: 3,
-          pointHoverBackgroundColor: "rgba(0, 115, 223, 1)",
-          pointHoverBorderColor: "rgba(0, 115, 223, 1)",
-          pointHitRadius: 10,
-          pointBorderWidth: 2,
-          data: data4[2],
-        }, {
-          label: "Temp4",
-          lineTension: lineTensionValue,
-          backgroundColor: "rgba(178, 0, 223, 0.4)",
-          borderColor: "rgba(178, 0, 223, 1)",
-          pointRadius: 0, borderWidth: 1,
-          pointBackgroundColor: "rgba(178, 0, 223, 1)",
-          pointBorderColor: "rgba(178, 0, 223, 1)",
-          pointHoverRadius: 3,
-          pointHoverBackgroundColor: "rgba(178, 0, 223, 1)",
-          pointHoverBorderColor: "rgba(178, 0, 223, 1)",
-          pointHitRadius: 10,
-          pointBorderWidth: 2,
-          data: data4[3],
-        }],
-      },
-      options: {
-        maintainAspectRatio: false,
+    // var ctx = document.getElementById("myAreaChart3");
+    // myLineChart3 = new Chart(ctx, {
+    //   type: 'line',
+    //   data: {
+    //     labels: label2,
+    //     datasets: [{
+    //       label: "Temp1",
+    //       lineTension: lineTensionValue,
+    //       backgroundColor: "rgba(255, 115, 223, 0.4)",
+    //       borderColor: "rgba(255, 115, 223, 1)",
+    //       pointRadius: 0, borderWidth: 1,
+    //       pointBackgroundColor: "rgba(255, 115, 223, 1)",
+    //       pointBorderColor: "rgba(255, 115, 223, 1)",
+    //       pointHoverRadius: 3,
+    //       pointHoverBackgroundColor: "rgba(255, 115, 223, 1)",
+    //       pointHoverBorderColor: "rgba(255, 115, 223, 1)",
+    //       pointHitRadius: 10,
+    //       pointBorderWidth: 2,
+    //       data: data4[0],
+    //     }, {
+    //       label: "Temp2",
+    //       lineTension: lineTensionValue,
+    //       backgroundColor: "rgba(178, 115, 223, 0.4)",
+    //       borderColor: "rgba(178, 115, 223, 1)",
+    //       pointRadius: 0, borderWidth: 1,
+    //       pointBackgroundColor: "rgba(178, 115, 223, 1)",
+    //       pointBorderColor: "rgba(178, 115, 223, 1)",
+    //       pointHoverRadius: 3,
+    //       pointHoverBackgroundColor: "rgba(178, 115, 223, 1)",
+    //       pointHoverBorderColor: "rgba(178, 115, 223, 1)",
+    //       pointHitRadius: 10,
+    //       pointBorderWidth: 2,
+    //       data: data4[1],
+    //     }, {
+    //       label: "Temp3",
+    //       lineTension: lineTensionValue,
+    //       backgroundColor: "rgba(0, 115, 223, 0.4)",
+    //       borderColor: "rgba(0, 115, 223, 1)",
+    //       pointRadius: 0, borderWidth: 1,
+    //       pointBackgroundColor: "rgba(0, 115, 223, 1)",
+    //       pointBorderColor: "rgba(0, 115, 223, 1)",
+    //       pointHoverRadius: 3,
+    //       pointHoverBackgroundColor: "rgba(0, 115, 223, 1)",
+    //       pointHoverBorderColor: "rgba(0, 115, 223, 1)",
+    //       pointHitRadius: 10,
+    //       pointBorderWidth: 2,
+    //       data: data4[2],
+    //     }, {
+    //       label: "Temp4",
+    //       lineTension: lineTensionValue,
+    //       backgroundColor: "rgba(178, 0, 223, 0.4)",
+    //       borderColor: "rgba(178, 0, 223, 1)",
+    //       pointRadius: 0, borderWidth: 1,
+    //       pointBackgroundColor: "rgba(178, 0, 223, 1)",
+    //       pointBorderColor: "rgba(178, 0, 223, 1)",
+    //       pointHoverRadius: 3,
+    //       pointHoverBackgroundColor: "rgba(178, 0, 223, 1)",
+    //       pointHoverBorderColor: "rgba(178, 0, 223, 1)",
+    //       pointHitRadius: 10,
+    //       pointBorderWidth: 2,
+    //       data: data4[3],
+    //     }],
+    //   },
+    //   options: {
+    //     maintainAspectRatio: false,
 
-        scales: {
-          xAxes: [{
-            type: 'time',
-            time: {
-              unit: 'minute'
-            },
-            ticks: {
-              maxTicksLimit: 7
-            }
-          }],
-          yAxes: [{
-            ticks: {
-              maxTicksLimit: 5,
-              callback: function (value, index, values) {
-                return number_format(value, decimals = 1) + ' °C';
-              }
-            },
-            gridLines: {
-              color: "rgb(234, 236, 244)",
-              zeroLineColor: "rgb(234, 236, 244)",
-              drawBorder: false,
-              borderDash: [2],
-              zeroLineBorderDash: [2]
-            }
-          }],
-        },
-        legend: {
-          display: false
-        },
-        tooltips: {
-          backgroundColor: 'rgba(255, 255, 255, 0)',
-          bodyFontColor: "#858796",
-          titleMarginBottom: 10,
-          titleFontColor: '#6e707e',
-          titleFontSize: 14,
-          borderColor: '#dddfeb',
-          borderWidth: 1,
-          xPadding: 15,
-          yPadding: 15,
-          displayColors: false,
-          intersect: false,
-          mode: 'index',
-          caretPadding: 10,
-          callbacks: {
-            label: function (tooltipItem, chart) {
-              var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-              return datasetLabel + ' ' + number_format(tooltipItem.yLabel, decimals = 2) + ' °C';
-            }
-          }
-        }
-      }
-    });
+    //     scales: {
+    //       xAxes: [{
+    //         type: 'time',
+    //         time: {
+    //           unit: 'minute'
+    //         },
+    //         ticks: {
+    //           maxTicksLimit: 7
+    //         }
+    //       }],
+    //       yAxes: [{
+    //         ticks: {
+    //           maxTicksLimit: 5,
+    //           callback: function (value, index, values) {
+    //             return number_format(value, decimals = 1) + ' °C';
+    //           }
+    //         },
+    //         gridLines: {
+    //           color: "rgb(234, 236, 244)",
+    //           zeroLineColor: "rgb(234, 236, 244)",
+    //           drawBorder: false,
+    //           borderDash: [2],
+    //           zeroLineBorderDash: [2]
+    //         }
+    //       }],
+    //     },
+    //     legend: {
+    //       display: false
+    //     },
+    //     tooltips: {
+    //       backgroundColor: 'rgba(255, 255, 255, 0)',
+    //       bodyFontColor: "#858796",
+    //       titleMarginBottom: 10,
+    //       titleFontColor: '#6e707e',
+    //       titleFontSize: 14,
+    //       borderColor: '#dddfeb',
+    //       borderWidth: 1,
+    //       xPadding: 15,
+    //       yPadding: 15,
+    //       displayColors: false,
+    //       intersect: false,
+    //       mode: 'index',
+    //       caretPadding: 10,
+    //       callbacks: {
+    //         label: function (tooltipItem, chart) {
+    //           var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+    //           return datasetLabel + ' ' + number_format(tooltipItem.yLabel, decimals = 2) + ' °C';
+    //         }
+    //       }
+    //     }
+    //   }
+    // });
 
     //////////////////////////
 
 
 
 
-    var ctx = document.getElementById("myAreaChart4");
-    myLineChart4 = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: label2,
-        datasets: [{
-          label: "Remaincap",
-          lineTension: lineTensionValue,
-          backgroundColor: "rgba(255, 115, 223, 0.4)",
-          borderColor: "rgba(255, 115, 223, 1)",
-          pointRadius: 0, borderWidth: 1,
-          pointBackgroundColor: "rgba(255, 115, 223, 1)",
-          pointBorderColor: "rgba(255, 115, 223, 1)",
-          pointHoverRadius: 3,
-          pointHoverBackgroundColor: "rgba(255, 115, 223, 1)",
-          pointHoverBorderColor: "rgba(255, 115, 223, 1)",
-          pointHitRadius: 10,
-          pointBorderWidth: 2,
-          data: data5,
-        }],
-      },
-      options: {
-        maintainAspectRatio: false,
+    // var ctx = document.getElementById("myAreaChart4");
+    // myLineChart4 = new Chart(ctx, {
+    //   type: 'line',
+    //   data: {
+    //     labels: label2,
+    //     datasets: [{
+    //       label: "Remaincap",
+    //       lineTension: lineTensionValue,
+    //       backgroundColor: "rgba(255, 115, 223, 0.4)",
+    //       borderColor: "rgba(255, 115, 223, 1)",
+    //       pointRadius: 0, borderWidth: 1,
+    //       pointBackgroundColor: "rgba(255, 115, 223, 1)",
+    //       pointBorderColor: "rgba(255, 115, 223, 1)",
+    //       pointHoverRadius: 3,
+    //       pointHoverBackgroundColor: "rgba(255, 115, 223, 1)",
+    //       pointHoverBorderColor: "rgba(255, 115, 223, 1)",
+    //       pointHitRadius: 10,
+    //       pointBorderWidth: 2,
+    //       data: data5,
+    //     }],
+    //   },
+    //   options: {
+    //     maintainAspectRatio: false,
 
-        scales: {
-          xAxes: [{
-            type: 'time',
-            time: {
-              unit: 'minute'
-            },
-            ticks: {
-              maxTicksLimit: 7
-            }
-          }],
-          yAxes: [{
-            ticks: {
-              maxTicksLimit: 5,
-              callback: function (value, index, values) {
-                return number_format(value, decimals = 1) + ' Ah';
-              }
-            },
-            gridLines: {
-              color: "rgb(234, 236, 244)",
-              zeroLineColor: "rgb(234, 236, 244)",
-              drawBorder: false,
-              borderDash: [2],
-              zeroLineBorderDash: [2]
-            }
-          }],
-        },
-        legend: {
-          display: false
-        },
-        tooltips: {
-          backgroundColor: 'rgba(255, 255, 255, 0.4)',
-          bodyFontColor: "#858796",
-          titleMarginBottom: 10,
-          titleFontColor: '#6e707e',
-          titleFontSize: 14,
-          borderColor: '#dddfeb',
-          borderWidth: 1,
-          xPadding: 15,
-          yPadding: 15,
-          displayColors: false,
-          intersect: false,
-          mode: 'index',
-          caretPadding: 10,
-          callbacks: {
-            label: function (tooltipItem, chart) {
-              var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-              return datasetLabel + ' ' + number_format(tooltipItem.yLabel, decimals = 2) + ' Ah';
-            }
-          }
-        }
-      }
-    });
+    //     scales: {
+    //       xAxes: [{
+    //         type: 'time',
+    //         time: {
+    //           unit: 'minute'
+    //         },
+    //         ticks: {
+    //           maxTicksLimit: 7
+    //         }
+    //       }],
+    //       yAxes: [{
+    //         ticks: {
+    //           maxTicksLimit: 5,
+    //           callback: function (value, index, values) {
+    //             return number_format(value, decimals = 1) + ' Ah';
+    //           }
+    //         },
+    //         gridLines: {
+    //           color: "rgb(234, 236, 244)",
+    //           zeroLineColor: "rgb(234, 236, 244)",
+    //           drawBorder: false,
+    //           borderDash: [2],
+    //           zeroLineBorderDash: [2]
+    //         }
+    //       }],
+    //     },
+    //     legend: {
+    //       display: false
+    //     },
+    //     tooltips: {
+    //       backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    //       bodyFontColor: "#858796",
+    //       titleMarginBottom: 10,
+    //       titleFontColor: '#6e707e',
+    //       titleFontSize: 14,
+    //       borderColor: '#dddfeb',
+    //       borderWidth: 1,
+    //       xPadding: 15,
+    //       yPadding: 15,
+    //       displayColors: false,
+    //       intersect: false,
+    //       mode: 'index',
+    //       caretPadding: 10,
+    //       callbacks: {
+    //         label: function (tooltipItem, chart) {
+    //           var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+    //           return datasetLabel + ' ' + number_format(tooltipItem.yLabel, decimals = 2) + ' Ah';
+    //         }
+    //       }
+    //     }
+    //   }
+    // });
 
 
 
   }
 };
 
-function getBatData(s,ns,sub,id) {
-  sample = s;
+// function getBatData(s,ns,sub,id) {
+//   sample = s;
 
-  myLineChart1.destroy();
-  myLineChart2.destroy();
-  myLineChart3.destroy();
-  myLineChart4.destroy();
-  request.open('POST', url, true);
-  request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-  request.send('{"sample":' + s + ',"num_sample":'+ns+',"sub":'+sub+',"id":'+id+'}');
-}
+//   myLineChart1.destroy();
+//   myLineChart2.destroy();
+//   myLineChart3.destroy();
+//   myLineChart4.destroy();
+//   request.open('POST', url, true);
+//   request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+//   request.send('{"sample":' + s + ',"num_sample":'+ns+',"sub":'+sub+',"id":'+id+'}');
+// }
 
-request.open('POST', url, true);
-request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-request.send('{"sample":1,"num_sample":600}');
+// request.open('POST', url, true);
+// request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+// request.send('{"sample":1,"num_sample":600}');
 
-// request2.open('GET', window.location.protocol + '//' + window.location.host +'/readJBD/'+ (window.location.hash ? window.location.hash.split('#')[1] : '0868755123661050'), true);
-// request2.send();
+request2.open('GET', window.location.protocol + '//' + window.location.host + '/readJBD/' + (window.location.hash ? window.location.hash.split('#')[1] : '0868755123661050'), true);
+request2.send();
+

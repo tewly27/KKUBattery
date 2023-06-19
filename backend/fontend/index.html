@@ -55,36 +55,25 @@
 
                     <div>Battery Dashboard</div>
 
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
 
-                    <!-- Topbar Search -->
-
-
-                    <!-- Topbar Navbar -->
 
 
                 </nav>
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid col-md-6" style="padding: 0;padding-top: 2em;">
+                <div class="container-fluid col-md-6" style="padding: 0;padding-top: 6em;">
                     <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Battery ID : 1</h1>
-                    </div>
+
 
 
                     <div class="row align-items-start">
                         <div class="col p-0">
                             <div class="card  shadow h-100 py-2">
                                 <div class="card-body pb-0 pt-0">
-                                    <div id="soc" class="text-s font-weight-bold text-primary text-uppercase mb-1"
-                                        style="      position: absolute;
-                                        left: 0;right: 0;top: 7.5em;text-align: center;margin: auto;z-index: 9;">
-                                        0
+                                    <div id="soc" class="h4 font-weight-bold text-primary" style="      position: absolute;
+                                        left: 0;right: 0;top: 5em;text-align: center;margin: auto;z-index: 9;">
+                                        0 %
                                     </div>
                                     <div class="text-s font-weight-bold text-primary text-uppercase mb-1">
                                         SOC</div>
@@ -97,10 +86,9 @@
                         <div class="col p-0">
                             <div class="card  shadow h-100 py-2">
                                 <div class="card-body pb-0 pt-0">
-                                    <div id="remaincap" class="text-s font-weight-bold text-primary text-uppercase mb-1"
-                                        style="      position: absolute;
-                                        left: 0;right: 0;top: 7.5em;text-align: center;margin: auto;z-index: 9;">
-                                        0
+                                    <div id="remaincap" class="h4 font-weight-bold text-primary" style="      position: absolute;
+                                        left: 0;right: 0;top: 5em;text-align: center;margin: auto;z-index: 9;">
+                                        0 Ah
                                     </div>
                                     <div class="text-s font-weight-bold text-primary text-uppercase mb-1">
                                         remaincap</div>
@@ -117,10 +105,9 @@
                         <div class="col p-0">
                             <div class="card  shadow h-100 py-2">
                                 <div class="card-body pb-0 pt-0">
-                                    <div id="maxtemp" class="text-s font-weight-bold text-primary text-uppercase mb-1"
-                                        style="      position: absolute;
-                                        left: 0;right: 0;top: 7.5em;text-align: center;margin: auto;z-index: 9;">
-                                        0
+                                    <div id="maxtemp" class="h4 font-weight-bold text-primary" style="      position: absolute;
+                                        left: 0;right: 0;top: 5em;text-align: center;margin: auto;z-index: 9;">
+                                        0 °C
                                     </div>
                                     <div class="text-s font-weight-bold text-primary text-uppercase mb-1">
                                         maxtemp</div>
@@ -135,83 +122,67 @@
 
                     <!-- Content Row -->
                     <div class="row">
+                        <div class="col p-0">
+                            <div class="card  shadow h-100 py-2">
+                                <div class="card-body pb-0 pt-0">
 
-
-                        <div class="col">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">cycle
-                                            </div>
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" id="cycle">
-                                                        100</div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="progress progress-sm mr-2">
-                                                        <div class="progress-bar bg-success" id="socbar"
-                                                            role="progressbar" style="width: 50%" aria-valuenow="50"
-                                                            aria-valuemin="0" aria-valuemax="100"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
+                                    <div class="text-s font-weight-bold text-primary text-uppercase mb-1">
+                                        Voltage</div>
+                                    <div class="h5 font-weight-bold text-gray-800" style="text-align: center;"
+                                        id="voltage">
+                                        0 V</div>
                                 </div>
                             </div>
                         </div>
+                        <div class="col p-0">
+                            <div class="card  shadow h-100 py-2">
+                                <div class="card-body pb-0 pt-0">
 
-                        <div class="col">
-                            <div class="card border-left-info shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                remaincap
-                                            </div>
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"
-                                                        id="remaincap">
-                                                        4500</div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="progress progress-sm mr-2">
-                                                        <div class="progress-bar bg-info" id="remaincapbar"
-                                                            role="progressbar" style="width: 0%" aria-valuenow="70"
-                                                            aria-valuemin="0" aria-valuemax="100"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
+                                    <div class="text-s font-weight-bold text-primary text-uppercase mb-1">
+                                        Current</div>
+                                    <div class="h5 font-weight-bold text-gray-800" style="text-align: center;"
+                                        id="current">
+                                        0 A</div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col p-0">
+                            <div class="card  shadow h-100 py-2">
+                                <div class="card-body pb-0 pt-0">
 
-                        <div class="col">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Max Temperature</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="maxtemp">18</div>
-                                        </div>
-                                    </div>
+                                    <div class="text-s font-weight-bold text-primary text-uppercase mb-1">
+                                        Power</div>
+                                    <div class="h5 font-weight-bold text-gray-800" style="text-align: center;"
+                                        id="power">
+                                        0 W</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col p-0">
+                            <div class="card  shadow h-100 py-2">
+                                <div class="card-body pb-0 pt-0">
+
+                                    <img src="img/co2.png" alt=""
+                                        style="width:6rem;display: block; margin-left: auto;margin-right: auto;">
+                                    <div class="h5 font-weight-bold text-gray-800" style="text-align: center;"
+                                        id="power">
+                                        4,418,243,006 Kg</div>
+                                    <div class="h6 font-weight-bold text-gray-600" style="text-align: center;">
+                                    Total CO<sub>2</sub> Emissions Saved</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    <!-- 
                     <div class="row">
                         <div class="col">
 
-                            <!-- Card Example -->
+
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary">Option</h6>
@@ -238,45 +209,31 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- Chart -->
 
-                    <div class="row">
-
-                        <!-- Area Chart -->
+                    <!-- <div class="row">
                         <div class="col">
                             <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Voltage</h6>
-
                                 </div>
-                                <!-- Card Body -->
                                 <div class="card-body">
                                     <div class="chart-area">
                                         <canvas id="myAreaChart"></canvas>
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
-
-
                     </div>
                     <div class="row">
-
-                        <!-- Area Chart -->
                         <div class="col">
                             <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Current</h6>
-
                                 </div>
-                                <!-- Card Body -->
                                 <div class="card-body">
                                     <div class="chart-area">
                                         <canvas id="myAreaChart2"></canvas>
@@ -285,20 +242,13 @@
                             </div>
                         </div>
                     </div>
-
-
                     <div class="row">
-
-                        <!-- Area Chart -->
                         <div class="col">
                             <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Temperature</h6>
-
                                 </div>
-                                <!-- Card Body -->
                                 <div class="card-body">
                                     <div class="chart-area">
                                         <canvas id="myAreaChart3"></canvas>
@@ -307,19 +257,14 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row">
-
-                        <!-- Area Chart -->
                         <div class="col">
                             <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Remaincap</h6>
 
                                 </div>
-                                <!-- Card Body -->
                                 <div class="card-body">
                                     <div class="chart-area">
                                         <canvas id="myAreaChart4"></canvas>
@@ -327,40 +272,10 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
 
-                    <div class="row">
-                        <div class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-pie pt-4 pb-2">
-                                        <canvas id="myPieChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
 
                     <div class="shadow" style="width:100%;height: 600px;padding: 20px;" id="map"></div>
 

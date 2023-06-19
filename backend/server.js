@@ -11,15 +11,15 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 const url = 'https://en.wikipedia.org/wiki/List_of_Presidents_of_the_United_States';
-
+axios.defaults.withCredentials = true
 app.use(cors({
   origin: '*'
 }));
 
 //////////////////
 const pool = new Pool({
-  // host: 'local_pgdb',
-  host: 'localhost',
+  host: 'local_pgdb',
+  // host: 'localhost',
   database: 'admin',
   user: 'admin',
   password: 'k304298',
@@ -42,15 +42,16 @@ formData.append('password', '123456');
 axios({
   method: 'post',
   url: 'https://iot.jiabaida.com/api/login',
+  withCredentials: true,
   headers: {
-    'Content-Type': 'multipart/form-data; boundary=' + formData.getBoundary(),
-    'cookie': 'SESSION=NDM2MTY4MDQtNmI3NC00YWQ2LWEyZTMtZmNiZTJkYzk3Y2Y5'
+    'Content-Type': 'multipart/form-data; boundary=' + formData.getBoundary()
   },
-  data: formData,
-  withCredentials: true
+  data: formData
 })
   .then(function (response) {
-    console.log(response)
+    axios.defaults.headers.Cookie = response.headers["set-cookie"][0];
+    console.log(response);
+    console.log(response.headers["set-cookie"][0]);
   });
 
 app.post('/batinfo/:tagId', (req, res) => {
@@ -108,15 +109,17 @@ app.get('/readJBD/:tagId', (req, res) => {
   try {
     axios({
       method: 'get',
-      url: 'https://iot.jiabaida.com/api/device/queryPaging?query=%7B%22currentPage%22%3A1%2C%22pageSize%22%3A20%2C%22paramMap%22%3A%7B%22selectCustomerId%22%3Anull%2C%22imei%22%3A'+imei+'%2C%22isIncludingSub%22%3A0%2C%22status%22%3Anull%2C%22siteName%22%3Anull%2C%22rentStatus%22%3Anull%2C%22deviceGroupIdList%22%3A%5B%5D%2C%22deviceModelId%22%3Anull%2C%22iccid%22%3Anull%2C%22rentExpireDate%22%3Anull%2C%22offlineHours%22%3A0%2C%22offlineStartTime%22%3Anull%2C%22offlineEndTime%22%3Anull%2C%22rentTel%22%3Anull%2C%22transferBatchNo%22%3A%22%22%2C%22statusLabel%22%3Anull%2C%22alarmType%22%3Anull%2C%22activateTimedown%22%3Anull%2C%22activateTimeup%22%3Anull%2C%22rentStartTimedown%22%3Anull%2C%22rentStartTimeup%22%3Anull%2C%22rentStartTime%22%3A%22descending%22%2C%22name%22%3A%22%22%2C%22activateTime%22%3Anull%2C%22lastHeartbeatDate%22%3Anull%2C%22gpsTypeId%22%3Anull%2C%22reportManageId%22%3Anull%7D%7D'
+
+      url: 'https://iot.jiabaida.com/api/device/queryPaging?query=%7B%22currentPage%22%3A1%2C%22pageSize%22%3A20%2C%22paramMap%22%3A%7B%22selectCustomerId%22%3Anull%2C%22imei%22%3A' + imei + '%2C%22isIncludingSub%22%3A0%2C%22status%22%3Anull%2C%22siteName%22%3Anull%2C%22rentStatus%22%3Anull%2C%22deviceGroupIdList%22%3A%5B%5D%2C%22deviceModelId%22%3Anull%2C%22iccid%22%3Anull%2C%22rentExpireDate%22%3Anull%2C%22offlineHours%22%3A0%2C%22offlineStartTime%22%3Anull%2C%22offlineEndTime%22%3Anull%2C%22rentTel%22%3Anull%2C%22transferBatchNo%22%3A%22%22%2C%22statusLabel%22%3Anull%2C%22alarmType%22%3Anull%2C%22activateTimedown%22%3Anull%2C%22activateTimeup%22%3Anull%2C%22rentStartTimedown%22%3Anull%2C%22rentStartTimeup%22%3Anull%2C%22rentStartTime%22%3A%22descending%22%2C%22name%22%3A%22%22%2C%22activateTime%22%3Anull%2C%22lastHeartbeatDate%22%3Anull%2C%22gpsTypeId%22%3Anull%2C%22reportManageId%22%3Anull%7D%7D'
+      , withCredentials: true
       , headers: {
-        'cookie': 'SESSION=NDM2MTY4MDQtNmI3NC00YWQ2LWEyZTMtZmNiZTJkYzk3Y2Y5'
+        'accept-encoding': 'gzip, deflate'
       },
     })
-    .then(function (response) {
-      // console.log(response.data)
-      res.send(response.data)
-    });
+      .then(function (response) {
+        // console.log(response.data)
+        res.send(response.data)
+      });
 
 
 
@@ -125,7 +128,35 @@ app.get('/readJBD/:tagId', (req, res) => {
   }
 })
 
+app.get('/readGPS/:tagId', (req, res) => {
+  // default
+  var deviceIds = '80577'
+  // var did = '0868755123661050'
+  // console.log(req.params.tagId)
+  if (req.params.tagId) {
+    deviceIds = req.params.tagId
+  }
+  try {
+    axios({
+      method: 'get',
 
+      url: 'https://iot.jiabaida.com/api/device/gpsLocation?deviceIds='+deviceIds
+      , withCredentials: true
+      , headers: {
+        'accept-encoding': 'gzip, deflate'
+      },
+    })
+      .then(function (response) {
+        // console.log(response.data)
+        res.send(response.data)
+      });
+
+
+
+  } catch (error) {
+
+  }
+})
 
 
 app.post('/addData', (req, res) => {
