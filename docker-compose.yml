@@ -31,7 +31,7 @@ services:
     restart: always
     build: backend/.
     ports:
-      - "80:80"
+      - "443:443"
     depends_on:
       - db
 volumes:
