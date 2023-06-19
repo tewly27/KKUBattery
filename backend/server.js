@@ -183,7 +183,7 @@ app.post('/addData', (req, res) => {
 })
 
 
-app.listen(port,'0.0.0.0' ,() => {
+app.listen(port,'uvolt360.kku.ac.th' ,() => {
   console.log(`Starting node.js at port ${port}`);
 });
 
