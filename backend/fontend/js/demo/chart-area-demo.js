@@ -73,7 +73,7 @@ request3.onreadystatechange = function () {
   if (this.readyState === 4 && this.status === 200) {
     const response = JSON.parse(this.responseText);
     // console.log(response.records[0].collectBasicInfo)
-    console.log(response[deviceID].point.lat)
+    console.log(response[deviceID])
     var position = { lat: response[deviceID].point.lat, lon: response[deviceID].point.lng }
     var marker = new longdo.Marker(position);
     map.location(position, true);
