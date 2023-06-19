@@ -26,12 +26,13 @@ services:
   #     PGADMIN_DEFAULT_PASSWORD: k304298
   #   volumes:
   #     - pgadmin-data:/var/lib/pgadmin
+
   webapp:
     container_name: uvolt
     restart: always
     build: backend/.
     ports:
-      - "443:443"
+      - "80:80"
     depends_on:
       - db
 volumes:
