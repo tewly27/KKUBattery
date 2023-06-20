@@ -191,12 +191,12 @@ app.post('/addData', (req, res) => {
   }
 })
 
-const https_options = {
+const options = {
   key: fs.readFileSync(__dirname + "/ssl_private.key"),
   cert: fs.readFileSync(__dirname + "/ssl.crt")
 };
 
-const server = https.createServer( app);
+const server = https.createServer(options, app);
 
 server.listen(8443, function () {
   console.log('Listening on port ' + server.address().port);
