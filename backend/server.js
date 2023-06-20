@@ -1,8 +1,8 @@
 const express = require("express");
-const Pool = require('pg').Pool;
+// const Pool = require('pg').Pool;
 const cors = require('cors');
 const app = express();
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 8080;
 const https = require('https');
 const FormData = require('form-data');
 const axios = require('axios');
@@ -17,15 +17,15 @@ app.use(cors({
 }));
 
 //////////////////
-const pool = new Pool({
-  host: 'local_pgdb',
-  // host: 'localhost',
-  database: 'admin',
-  user: 'admin',
-  password: 'k304298',
-  port: 5432,
-});
-pool.connect();
+// const pool = new Pool({
+//   host: 'local_pgdb',
+//   // host: 'localhost',
+//   database: 'admin',
+//   user: 'admin',
+//   password: 'k304298',
+//   port: 5432,
+// });
+// pool.connect();
 //////////////////
 
 app.use(express.static(__dirname + "/fontend"));
@@ -87,12 +87,12 @@ app.post('/batinfo/:tagId', (req, res) => {
       " group by datetime " +
       "order by datetime desc limit  " + num_sample;
     // console.log(sq)
-    pool.query(
-      sq,
-      (err, res2) => {
+    // pool.query(
+    //   sq,
+    //   (err, res2) => {
 
-        res.json(res2);
-      })
+    //     res.json(res2);
+    //   })
   } catch (error) {
     console.error(error)
   }
@@ -170,12 +170,12 @@ app.post('/addData', (req, res) => {
   try {
 
     // pool.connect();
-    pool.query(
-      "INSERT INTO public.battery (id, date, time, voltage, current, cell1, cell2, cell3, cell4, cell5, cell6, cell7, cell8, cell9, cell10, cell11, cell12, cell13, avg_cell, max_cell, min_cell, soc, remaincap, fcc, cycle, temp1, temp2, temp3, temp4, c_fet, d_fet, protectstatus, balancestatus) " +
-      "(2,'18/05/2023','13:50:10',50.49,7.47,3.867,3.887,3.885,3.886,3.883,3.887,3.884,3.885,3.884,3.883,3.886,3.885,3.89,3.884,3.89,3.867,67,27000,40000,0,37.5,37.5,37.4,37.1,'ON','ON',null,0)"
-      , (err, res2) => {
-        // pool.end();
-      })
+    // pool.query(
+    //   "INSERT INTO public.battery (id, date, time, voltage, current, cell1, cell2, cell3, cell4, cell5, cell6, cell7, cell8, cell9, cell10, cell11, cell12, cell13, avg_cell, max_cell, min_cell, soc, remaincap, fcc, cycle, temp1, temp2, temp3, temp4, c_fet, d_fet, protectstatus, balancestatus) " +
+    //   "(2,'18/05/2023','13:50:10',50.49,7.47,3.867,3.887,3.885,3.886,3.883,3.887,3.884,3.885,3.884,3.883,3.886,3.885,3.89,3.884,3.89,3.867,67,27000,40000,0,37.5,37.5,37.4,37.1,'ON','ON',null,0)"
+    //   , (err, res2) => {
+    //     // pool.end();
+    //   })
     res.send(`Add data completed.`)
   } catch (error) {
 
