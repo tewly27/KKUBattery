@@ -6,6 +6,7 @@ const port = process.env.PORT || 8080;
 const https = require('https');
 const FormData = require('form-data');
 const axios = require('axios');
+const fs = require('fs');
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -15,6 +16,13 @@ axios.defaults.withCredentials = true
 app.use(cors({
   origin: '*'
 }));
+
+
+
+// const https = require('https');
+
+
+
 
 //////////////////
 // const pool = new Pool({
@@ -39,6 +47,7 @@ const g2 = ["seconds", "minutes", "hours", "days", "weeks", "months", "year"];
 const formData = new FormData();
 formData.append('username', 'VP');
 formData.append('password', '123456');
+
 axios({
   method: 'post',
   url: 'https://iot.jiabaida.com/api/login',
@@ -50,7 +59,7 @@ axios({
 })
   .then(function (response) {
     axios.defaults.headers.Cookie = response.headers["set-cookie"][0];
-    console.log(response);
+    // console.log(response);
     console.log(response.headers["set-cookie"][0]);
   });
 
@@ -140,7 +149,7 @@ app.get('/readGPS/:tagId', (req, res) => {
     axios({
       method: 'get',
 
-      url: 'https://iot.jiabaida.com/api/device/gpsLocation?deviceIds='+deviceIds
+      url: 'https://iot.jiabaida.com/api/device/gpsLocation?deviceIds=' + deviceIds
       , withCredentials: true
       , headers: {
         'accept-encoding': 'gzip, deflate'
@@ -182,8 +191,18 @@ app.post('/addData', (req, res) => {
   }
 })
 
+const https_options = {
+  key: fs.readFileSync(__dirname + "/ssl_private.key"),
+  cert: fs.readFileSync(__dirname + "/ssl.crt")
+};
 
-app.listen(port ,() => {
+const server = https.createServer( app);
+
+server.listen(8443, function () {
+  console.log('Listening on port ' + server.address().port);
+});
+
+app.listen(port, () => {
   console.log(`Starting node.js at port ${port}`);
 });
 
