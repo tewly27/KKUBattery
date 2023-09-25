@@ -1,5 +1,5 @@
 const express = require("express");
-// const Pool = require('pg').Pool;
+const Pool = require('pg').Pool;
 const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 8080;
@@ -19,21 +19,20 @@ app.use(cors({
 
 
 
-// const https = require('https');
 
 
 
 
 //////////////////
-// const pool = new Pool({
-//   host: 'local_pgdb',
-//   // host: 'localhost',
-//   database: 'admin',
-//   user: 'admin',
-//   password: 'k304298',
-//   port: 5432,
-// });
-// pool.connect();
+const pool = new Pool({
+  host: 'local_pgdb',
+  // host: 'localhost',
+  database: 'admin',
+  user: 'admin',
+  password: 'k304298',
+  port: 5432,
+});
+pool.connect();
 //////////////////
 
 app.use(express.static(__dirname + "/fontend"));
@@ -96,22 +95,20 @@ app.post('/batinfo/:tagId', (req, res) => {
       " group by datetime " +
       "order by datetime desc limit  " + num_sample;
     // console.log(sq)
-    // pool.query(
-    //   sq,
-    //   (err, res2) => {
+    pool.query(
+      sq,
+      (err, res2) => {
 
-    //     res.json(res2);
-    //   })
+        res.json(res2);
+      })
   } catch (error) {
     console.error(error)
   }
 })
 
 app.get('/readJBD/:tagId', (req, res) => {
-  // default
+
   var imei = '0868755123660953'
-  // var imei = '0868755123661050'
-  // console.log(req.params.tagId)
   if (req.params.tagId) {
     imei = req.params.tagId
   }
@@ -126,11 +123,8 @@ app.get('/readJBD/:tagId', (req, res) => {
       },
     })
       .then(function (response) {
-        // console.log(response.data)
         res.send(response.data)
       });
-
-
 
   } catch (error) {
 
@@ -138,10 +132,7 @@ app.get('/readJBD/:tagId', (req, res) => {
 })
 
 app.get('/readGPS/:tagId', (req, res) => {
-  // default
   var deviceIds = '80577'
-  // var did = '0868755123661050'
-  // console.log(req.params.tagId)
   if (req.params.tagId) {
     deviceIds = req.params.tagId
   }
@@ -156,11 +147,8 @@ app.get('/readGPS/:tagId', (req, res) => {
       },
     })
       .then(function (response) {
-        // console.log(response.data)
         res.send(response.data)
       });
-
-
 
   } catch (error) {
 
@@ -171,20 +159,20 @@ app.get('/readGPS/:tagId', (req, res) => {
 app.post('/addData', (req, res) => {
   // users.push(req.body)
   let json = req.body
-  // console.log(json)
+  console.log(json)
 
   // if (isNaN(Number(req.body.id))) {
   //   return res.status(400).json({ err: "Numbers only, please!" });
   // }
   try {
 
-    // pool.connect();
-    // pool.query(
-    //   "INSERT INTO public.battery (id, date, time, voltage, current, cell1, cell2, cell3, cell4, cell5, cell6, cell7, cell8, cell9, cell10, cell11, cell12, cell13, avg_cell, max_cell, min_cell, soc, remaincap, fcc, cycle, temp1, temp2, temp3, temp4, c_fet, d_fet, protectstatus, balancestatus) " +
-    //   "(2,'18/05/2023','13:50:10',50.49,7.47,3.867,3.887,3.885,3.886,3.883,3.887,3.884,3.885,3.884,3.883,3.886,3.885,3.89,3.884,3.89,3.867,67,27000,40000,0,37.5,37.5,37.4,37.1,'ON','ON',null,0)"
-    //   , (err, res2) => {
-    //     // pool.end();
-    //   })
+    pool.connect();
+    pool.query(
+      "INSERT INTO public.battery (id, date, time, voltage, current, cell1, cell2, cell3, cell4, cell5, cell6, cell7, cell8, cell9, cell10, cell11, cell12, cell13, avg_cell, max_cell, min_cell, soc, remaincap, fcc, cycle, temp1, temp2, temp3, temp4, c_fet, d_fet, protectstatus, balancestatus) " +
+      "(2,'18/05/2023','13:50:10',50.49,7.47,3.867,3.887,3.885,3.886,3.883,3.887,3.884,3.885,3.884,3.883,3.886,3.885,3.89,3.884,3.89,3.867,67,27000,40000,0,37.5,37.5,37.4,37.1,'ON','ON',null,0)"
+      , (err, res2) => {
+        // pool.end();
+      })
     res.send(`Add data completed.`)
   } catch (error) {
 

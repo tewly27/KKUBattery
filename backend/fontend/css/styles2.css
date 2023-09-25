@@ -1,0 +1,70 @@
+.skill {
+    width: 160px;
+    height: 190px;
+    position: relative;
+    margin: auto;
+}
+
+.outer {
+    width: 160px;
+    height: 160px;
+    padding: 20px;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15), 6px 6px 10px -1px rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+
+}
+
+.inner {
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 4px 4px 10px -1px rgba(0, 0, 0, 0.2), inset -4px -4px 6px -1px rgba(255, 255, 255, 0.4), -0.5px -0.5px 0px rgba(255, 255, 255, 1), 0.5px 0.5px 0px rgba(0, 0, 0, 0.15), 0px 12px 10px -10px rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+
+}
+
+#number {
+    font-weight: 600;
+    color: #FFF;
+}
+
+circle {
+    fill: none;
+    stroke: url(#GradientColor);
+    stroke-width: 20px;
+    stroke-dasharray: 450;
+    stroke-dashoffset: 450;
+    animation: anim 2s linear forwards;
+}
+
+@keyframes anim {
+    100% {
+        stroke-dashoffset: 157.5;
+    }
+}
+
+.c_progressbar {
+    /* position: absolute; */
+    /* top: 0; */
+    rotate: 90deg;
+}
+
+
+#mainNav.navbar-shrink .nav-link {
+    color: #999;
+    padding: 1.5rem 1.5rem 1.25rem;
+    border-bottom: 0.25rem solid transparent;
+}
+#mainNav.navbar-shrink .navbar-brand {
+    color: #999;
+}
+#mainNav.navbar-shrink {
+    background-color: #000;
+}
+
+.about-section {
+    padding-top: 10rem;
+    background: linear-gradient(to bottom, #232123 0%, rgba(0, 0, 0, 0.9) 75%, rgba(0, 0, 0, 0.8) 100%);
+}
